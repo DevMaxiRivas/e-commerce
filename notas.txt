@@ -1,0 +1,12 @@
+Para almacenar las imagenes de las brands en laravel
+Modificar el archivo composer.json
+"require": {
+        "php": "^8.2",
+        "intervention/image-laravel": "^1.2",
+        "laravel/framework": "^11.9",
+        "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5"
+    },
+
+guardar y luego
+composer insrall
