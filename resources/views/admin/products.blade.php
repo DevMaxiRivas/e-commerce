@@ -15,7 +15,7 @@
     <div class="main-content-inner">
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Categories</h3>
+                <h3>Products</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="{{ route('admin.index') }}">
@@ -26,7 +26,7 @@
                         <i class="icon-chevron-right"></i>
                     </li>
                     <li>
-                        <div class="text-tiny">All Category</div>
+                        <div class="text-tiny">Products</div>
                     </li>
                 </ul>
             </div>
@@ -44,10 +44,12 @@
                             </div>
                         </form>
                     </div>
-                    <a class="tf-button style-1 w208" href="{{ route('admin.category.add') }}"><i class="icon-plus"></i>Add
-                        new</a>
+                    <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}">
+                        <i class="icon-plus"></i>
+                        Add new
+                    </a>
                 </div>
-                <div class="wg-table table-all-user">
+                <div class="table-responsive">
                     @if (Session::has('status'))
                         <p class="alert alert-success">{{ Session::get('status') }}</p>
                     @endif
@@ -56,43 +58,53 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Slug</th>
-                                <th>Products</th>
+                                <th>Price</th>
+                                <th>SalePrice</th>
+                                <th>SKU</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Featured</th>
+                                <th>Stock</th>
+                                <th>Quantity</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($categories as $category)
+                            @foreach ($products as $product)
                                 <tr>
-                                    <td>{{ $category->id }}</td>
+                                    <td>{{ $product->id }}</td>
                                     <td class="pname">
                                         <div class="image">
-                                            <img src="{{ asset('uploads/categories') }}/{{ $category->image }}"
+                                            <img src="{{ asset('uploads/products/thumbnails') }}/{{ $product->image }}"
                                                 alt="" class="image">
                                         </div>
                                         <div class="name">
-                                            <a href="#" class="body-title-2">{{ $category->name }}</a>
+                                            <a href="#" class="body-title-2">{{ $product->name }}</a>
+                                            <div class="text-tiny mt-3">{{ $product->slug }}</div>
                                         </div>
                                     </td>
-                                    <td>{{ $category->slug }}</td>
-                                    {{-- <td><a href="{{ route('admin.category.products', ['category_slug' => $category->slug]) }}" --}}
-                                    {{-- <td><a href="#" target="_blank">{{ $category->products()->count() }}</a></td> --}}
-                                    <td><a href="#" target="_blank">0</a></td>
+                                    <td>${{ $product->regular_price }}</td>
+                                    <td>${{ $product->sale_price }}</td>
+                                    <td>{{ $product->SKU }}</td>
+                                    <td>{{ $product->category->name }}</td>
+                                    <td>{{ $product->brand->name }}</td>
+                                    <td>{{ $product->featured == 0 ? 'No' : 'Yes' }}</td>
+                                    <td>{{ $product->stock_status }}</td>
+                                    <td>{{ $product->quantity }}</td>
                                     <td>
                                         <div class="list-icon-function">
-                                            <a href="{{ route('admin.category.edit', ['id' => $category->id]) }}">
+                                            <div class="item eye">
+                                                <i class="icon-eye"></i>
+                                            </div>
+                                            <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
                                                 <div class="item edit">
                                                     <i class="icon-edit-3"></i>
                                                 </div>
                                             </a>
-                                            <form action="{{ route('admin.category.delete', ['id' => $category->id]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div class="item text-danger delete">
-                                                    <i class="icon-trash-2"></i>
-                                                </div>
-                                            </form>
+
+                                            <div class="item text-danger delete">
+                                                <i class="icon-trash-2"></i>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -100,32 +112,12 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="divider"></div>
                 <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">
-                    {{ $categories->links('pagination::bootstrap-5') }}
+                    {{ $products->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $(function() {
-            $(".delete").on('click', function(e) {
-                e.preventDefault();
-                var selectedForm = $(this).closest('form');
-                swal({
-                    title: "Are you sure?",
-                    text: "You want to delete this record?",
-                    type: "warning",
-                    buttons: ["No!", "Yes!"],
-                    confirmButtonColor: '#dc3545'
-                }).then(function(result) {
-                    if (result) {
-                        selectedForm.submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endpush
